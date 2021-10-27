@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+
+      - name: Build backend with Maven
+        run: mvn clean install -q -Pgithub --file pom.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+
+      - name: Get kube-demo-backend-api version
+        run: echo ::set-output name=version::$(mvn -Pgithub -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec --file pom.xml)
+        id: backendFetchAPIVersion
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Kube Demo Front End API Docker Image to DockerHub
+        id: docker_build_kube_demo_backend_api
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: kartikmavani/kube-demo-backend-api:${{ steps.backendFetchAPIVersion.outputs.version }}
+      - name: Image digest
+        run: echo Image pushed to docker hub ${{ steps.docker_build_kube_demo_backend_api.outputs.digest }}
