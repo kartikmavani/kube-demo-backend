@@ -19,8 +19,8 @@ public class BackendApplication implements CommandLineRunner {
 
     private static final Logger LOG = LoggerFactory.getLogger(BackendApplication.class);
 
-	@Autowired
-	private Environment env;
+    @Autowired
+    private Environment env;
 
     public static void main(String[] args) {
         LOG.info("STARTING THE APPLICATION");
@@ -31,28 +31,26 @@ public class BackendApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws InterruptedException, IOException {
         LOG.info("EXECUTING : command line runner");
-		String containerName = System.getenv("containerName") == null ? "tempContainer" : System.getenv("containerName");
-		String endPoint = env.getProperty("frontend.endpoint")+"?name="+containerName;
-		while (true) {
-			try {
-				URL url = new URL(endPoint);
-				HttpURLConnection http = (HttpURLConnection)url.openConnection();
-				http.setRequestMethod("POST");
-				http.setDoOutput(true);
-				String data = "{\n  \"test\": 12345\n}";
-				byte[] out = data.getBytes(StandardCharsets.UTF_8);
+        String containerName = System.getenv("containerName") == null ? "tempContainer" : System.getenv("containerName");
+        String endPoint = env.getProperty("frontend.endpoint") + "?name=" + containerName;
+        while (true) {
+            try {
+                URL url = new URL(endPoint);
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod("POST");
+                http.setDoOutput(true);
+                String data = "{\n  \"test\": 12345\n}";
+                byte[] out = data.getBytes(StandardCharsets.UTF_8);
 
-				OutputStream stream = http.getOutputStream();
-				stream.write(out);
+                OutputStream stream = http.getOutputStream();
+                stream.write(out);
 
-				LOG.info("Requesting endpoint - "+endPoint+ " -- Response - " + http.getResponseCode() + " " + http.getResponseMessage());
-				http.disconnect();
-			}
-			catch (IOException e) {
-				LOG.info("Cannot connect to the frontend at "+endPoint);
-			}
-			Thread.sleep(1000L);
-		}
-
+                LOG.info("Requesting endpoint - " + endPoint + " -- Response - " + http.getResponseCode() + " " + http.getResponseMessage());
+                http.disconnect();
+            } catch (IOException e) {
+                LOG.info("Cannot connect to the frontend at " + endPoint);
+            }
+            Thread.sleep(1000L);
+        }
     }
 }
