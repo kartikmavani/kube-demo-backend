@@ -32,7 +32,7 @@ public class BackendApplication implements CommandLineRunner {
     public void run(String... args) throws InterruptedException, IOException {
         LOG.info("EXECUTING : command line runner");
         String containerName = System.getenv("containerName") == null ? "tempContainer" : System.getenv("containerName");
-        String endPoint = env.getProperty("frontend.endpoint") + "?name=" + containerName;
+        String endPoint = env.getProperty("frontend.endpoint") + "?name=" + containerName + " -- Version 2";
         while (true) {
             try {
                 URL url = new URL(endPoint);

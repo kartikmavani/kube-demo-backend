@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.kubedemo</groupId>
-	<artifactId>frontend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>frontend</name>
+	<artifactId>backend-api</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
+	<name>backend-api</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>8</java.version>
